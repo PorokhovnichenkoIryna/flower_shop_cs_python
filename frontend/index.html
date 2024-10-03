@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flower Shop</title>
+    <script>
+        async function addFlower() {
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const response = await fetch('http://localhost:5000/flowers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, price })
+            });
+            if (response.ok) {
+                alert("Flower added successfully");
+                fetchFlowers();
+            }
+        }
+
+        async function fetchFlowers() {
+            const response = await fetch('http://localhost:5000/flowers');
+            const flowers = await response.json();
+            const flowerList = document.getElementById('flower-list');
+            flowerList.innerHTML = '';
+            flowers.forEach(flower => {
+                const li = document.createElement('li');
+                li.textContent = `${flower[1]} - $${flower[2]}`;
+                flowerList.appendChild(li);
+            });
+        }
+
+        window.onload = fetchFlowers;
+    </script>
+</head>
+<body>
+    <h1>Flower Shop</h1>
+    <input type="text" id="name" placeholder="Flower Name">
+    <input type="number" step="0.01" id="price" placeholder="Price">
+    <button onclick="addFlower()">Add Flower</button>
+
+    <h2>Available Flowers</h2>
+    <ul id="flower-list"></ul>
+</body>
+</html>
